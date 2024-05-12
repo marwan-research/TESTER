@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIC Code Qualification Checker</title>
+    <style>
+        .green-text {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h2>SIC Code Qualification Checker</h2>
+    <form id="codeForm">
+        <label for="code">Enter SIC Code:</label>
+        <input type="text" id="code" name="code" required>
+        <button type="button" onclick="checkQualification()">Check Qualification</button>
+    </form>
+    <div id="qualification"></div>
+
+    <script>
+        function checkQualification() {
+            var code = document.getElementById("code").value;
+            var qualification = document.getElementById("qualification");
+            var qualificationText = "";
+
+            // SIC codes for EII
+            var eiiSICCodes = {
+                "0510": "Mining of hard coal",
+                "0811": "Quarrying of ornamental and building stone, limestone, gypsum, chalk and slate",
+                "0812": "Operation of gravel and sand pits; mining of clays and kaolin",
+                "0899": "Other mining and quarrying not elsewhere classified",
+                "1012": "Processing and preserving of poultry meat",
+                "1061": "Manufacture of grain mill products",
+                "1091": "Manufacture of prepared feeds for farm animals",
+                "1106": "Manufacture of malt",
+                "1310": "Preparation and spinning of textile fibres",
+                "1320": "Weaving of textiles",
+                "1391": "Manufacture of knitted and crocheted fabrics",
+                "1393": "Manufacture of carpets and rugs",
+                "1395": "Manufacture of non-wovens and articles made from non-wovens, except apparel",
+                "1396": "Manufacture of other technical and industrial textiles",
+                "1399": "Manufacture of other textiles not elsewhere classified",
+                "1419": "Manufacture of other wearing apparel and accessories",
+                "1431": "Manufacture of knitted and crocheted hosiery",
+                "1439": "Manufacture of other knitted and crocheted apparel",
+                "1511": "Tanning and dressing of leather; dressing and dyeing of fur",
+                "1610": "Sawmilling and planing of wood",
+                "1621": "Manufacture of veneer sheets and wood-based panels",
+                "1629": "Manufacture of other products of wood; manufacture of articles of cork, straw and plaiting materials",
+                "1712": "Manufacture of paper and paperboard",
+                "1721": "Manufacture of corrugated paper and paperboard and of containers of paper and paperboard",
+                "1722": "Manufacture of household and sanitary goods and of toilet requisites",
+                "1724": "Manufacture of wallpaper",
+                "1920": "Manufacture of refined petroleum products",
+                "2011": "Manufacture of industrial gases",
+                "2013": "Manufacture of other inorganic basic chemicals",
+                "2014": "Manufacture of other organic basic chemicals",
+                "2015": "Manufacture of fertilisers and nitrogen compounds",
+                "2016": "Manufacture of plastics in primary forms",
+                "2017": "Manufacture of synthetic rubber in primary forms",
+                "2060": "Manufacture of man-made fibres",
+                "2211": "Manufacture of rubber tyres and tubes; retreading and rebuilding of rubber tyres",
+                "2219": "Manufacture of other rubber products",
+                "2221": "Manufacture of plastic plates, sheets, tubes and profiles",
+                "2222": "Manufacture of plastic packing goods",
+                "2229": "Manufacture of other plastic products",
+                "2311": "Manufacture of flat glass",
+                "2313": "Manufacture of hollow glass",
+                "2314": "Manufacture of glass fibres",
+                "2319": "Manufacture and processing of other glass, including technical glassware",
+                "2320": "Manufacture of refractory products",
+                "2331": "Manufacture of ceramic tiles and flags",
+                "2332": "Manufacture of bricks, tiles and construction products, in baked clay",
+                "2344": "Manufacture of other technical ceramic products",
+                "2349": "Manufacture of other ceramic products",
+                "2351": "Manufacture of cement",
+                "2352": "Manufacture of lime and plaster",
+                "2362": "Manufacture of plaster products for construction purposes",
+                "2365": "Manufacture of fibre cement",
+                "2399": "Manufacture of other non-metallic mineral products not elsewhere classified",
+                "2410": "Manufacture of basic iron and steel and of ferro-alloys",
+                "2420": "Manufacture of tubes, pipes, hollow profiles and related fittings of steel",
+                "2431": "Cold drawing of bars",
+                "2432": "Cold rolling of narrow strip",
+                "2434": "Cold drawing of wire",
+                "2442": "Aluminium production",
+                "2443": "Lead, zinc and tin production",
+                "2444": "Copper production",
+                "2445": "Other non-ferrous metal production",
+                "2451": "Casting of iron",
+                "2452": "Casting of steel",
+                "2453": "Casting of light metals",
+                "2454": "Casting of other non-ferrous metals",
+                "2592": "Manufacture of light metal packaging",
+                "2611": "Manufacture of electronic components",
+                "2720": "Manufacture of batteries and accumulators",
+                "2732": "Manufacture of other electronic and electric wires and cables",
+                "2891": "Manufacture of machinery for metallurgy"
+            };
+
+            // SIC codes for CCL
+            var cclSICCodes = {
+                "2311": "Manufacture of flat glass",
+                "2312": "Shaping and processing of flat glass",
+                "2313": "Manufacture of hollow glass",
+                "2314": "Manufacture of glass fibres",
+                "2319": "Manufacture and processing of other glass including technical glassware",
+                "2320": "Manufacture of refractory products",
+                "2331": "Manufacture of ceramic tiles and flags",
+                "2332": "Manufacture of bricks tiles and construction products in baked clay",
+                "2341": "Manufacture of ceramic household and ornamental articles",
+                "2342": "Manufacture of ceramic sanitary fixtures",
+                "2343": "Manufacture of ceramic insulators and insulating fittings",
+                "2344": "Manufacture of other technical ceramic products",
+                "2349": "Manufacture of other ceramic products",
+                "2351": "Manufacture of cement",
+                "2352": "Manufacture of lime and plaster",
+                "2361": "Manufacture of concrete products for construction purposes",
+                "2362": "Manufacture of plaster products for construction purposes",
+                "2363": "Manufacture of ready-mixed concrete",
+                "2364": "Manufacture of mortars",
+                "2365": "Manufacture of fibre cement",
+                "2369": "Manufacture of other articles of concrete plaster and cement",
+                "2370": "Cutting shaping and finishing of stone",
+                "2391": "Production of abrasive products",
+                "2399": "Manufacture of other non-metallic mineral products",
+                "2410": "Manufacture of basic iron and steel and of ferro-alloys",
+                "2420": "Manufacture of tubes, pipes, hollow profiles and related fittings of steel",
+                "2431": "Cold drawing of bars",
+                "2432": "Cold rolling of narrow strip",
+                "2433": "Cold forming or folding",
+                "2434": "Cold drawing of wire",
+                "2441": "Precious metals production",
+                "2442": "Aluminium production",
+                "2443": "Lead, zinc and tin production",
+                "2444": "Copper production",
+                "2445": "Other non-ferrous metal production",
+                "2446": "Processing of nuclear fuel",
+                "2451": "Casting of iron",
+                "2452": "Casting of steel",
+                "2453": "Casting of light metals",
+                "2454": "Casting of other non-ferrous metals",
+                "2550": "Forging pressing stamping and roll-forming of metal; powder metallurgy",
+                "2561": "Treatment and coating of metals",
+                "4910": "Passenger rail transport interurban",
+                "4920": "Freight rail transport",
+                "4939": "Other passenger land transport n.e.c.",
+                "5010": "Sea and coastal passenger water transport",
+                "5020": "Sea and coastal freight water transport",
+                "5030": "Inland passenger water transport",
+                "5040": "Inland freight water transport",
+                "5110": "Passenger air transport",
+                "5121": "Freight air transport",
+                "5122": "Space transport",
+                "5224": "Cargo handling"
+            };
+
+            // SIC codes for ETS
+            var etsSICCodes = {
+                "1310": "Preparation and spinning of cotton-type fibres",
+                "1411": "Manufacture of leather clothes",
+                "1621": "Manufacture of veneer sheets and wood-based panels",
+                "1711": "Manufacture of pulp",
+                "1712": "Manufacture of paper and paperboard",
+                "2013": "Manufacture of other inorganic basic chemicals",
+                "2014": "Manufacture of other organic basic chemicals",
+                "2015": "Manufacture of fertilisers and nitrogen compounds",
+                "2314": "Manufacture of glass fibres",
+                "2410": "Manufacture of basic iron and steel and of ferro-alloys",
+                "2442": "Aluminium production",
+                "2443": "Lead, zinc and tin production",
+                "2444": "Copper production",
+                "2720": "Manufacture of batteries and accumulators"
+            };
+
+            if (eiiSICCodes[code]) {
+                qualificationText += "<span class='green-text'>This SIC qualifies for EII</span> - " + eiiSICCodes[code] + "<br>";
+            }
+
+            if (cclSICCodes[code]) {
+                qualificationText += "<span class='green-text'>This SIC qualifies for CCL</span> - " + cclSICCodes[code] + "<br>";
+            }
+
+            if (etsSICCodes[code]) {
+                qualificationText += "<span class='green-text'>This SIC qualifies for ETS</span> - " + etsSICCodes[code] + "<br>";
+            }
+
+            if (qualificationText === "") {
+                qualificationText = "This SIC code does not qualify for any program.";
+            }
+
+            qualification.innerHTML = qualificationText;
+        }
+    </script>
+</body>
+</html>
